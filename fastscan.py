@@ -1,15 +1,51 @@
 #!/usr/bin/env python
 # coding=utf-8   
-import asyncio 
-import time  
-from scapy.all import *   
-from multiprocessing.dummy import Pool  
+import time    
+import asyncio
+from multiprocessing.dummy import Pool
 from lib.cmdline import cmd_parse 
-from lib.alive_scan import arp_ping 
+from lib.alive_scan import arp_ping,icmp_ping
 from lib.port_scan import scan_port  
 from lib.get_ip_list import get_ip_list 
-from lib.save_result import save_result   
-import pdb
+from lib.output import save_result,save_port
+import pdb  
+
+
+def is_intranet(ip):
+    try:
+        ip = [int(i) for i in ip.split('.') if int(i) >= 0 and int(i) <= 255]
+    except Exception as e:
+        print('ip format error')
+        return 0
+    else:
+        if len(ip) != 4:
+            print('ip format error')
+            return 0
+        else:
+            if ip[0] == 10:
+                return 1
+            elif ip[0] == 172 and ip[1] >= 16 and ip[1] <= 31:
+                return 1
+            elif ip[0] == 192 and ip[1] == 168:
+                return 1
+            else:
+                return 0
+
+
+def ping_type(ip,iface=[]):
+    type = is_intranet(ip)
+    if type:
+        result = arp_ping(ip,iface)
+        if result:
+            print(result+' Up') 
+            return result
+    else:
+        result = icmp_ping(ip)
+        if result:
+            print(result+' Up')
+            return result
+
+
 
 
 if __name__=='__main__':
@@ -19,14 +55,24 @@ if __name__=='__main__':
     args = cmd_parse() 
     ip_range = args.ip
     speed_arg = args.speed
+    output = args.output 
+    iface = args.iface 
+
     all_speed = {'low':2,'medium':5,'high':10}
     speed = all_speed[speed_arg]
-    ip_list = get_ip_list(ip_range) 
+    ip_list = get_ip_list(ip_range)  
     port_result = []
-    pool = Pool(50)
-    result = pool.map(arp_ping,ip_list)
-    alive_ip = [ ip for ip in result if ip]
-    print('发现{}台存活主机'.format(len(alive_ip)))
+
+    pool = Pool(30)
+    args = [ (ip,iface)  for ip in ip_list]
+    results = pool.starmap_async(ping_type,args)
+    results = results.get() 
+    pool.close() 
+    pool.join() 
+    ping_time = time.time() 
+    alive_ip = [ ip for ip in results if ip]
+    print('发现{}台存活主机　用时{}'.format(len(alive_ip),ping_time-start))  
+
     loop = asyncio.get_event_loop() 
     for i in range(0,1000,speed):
         ports = [top_1000_tcp_port[j] for j in range(i,i+speed)]
@@ -38,5 +84,7 @@ if __name__=='__main__':
                 print(task.result())
     loop.close() 
     end = time.time()
+    if output:
+        save_port(port_result,output) 
     save_result(port_result)
     print('扫描用时: {},存活主机{}台,共开放{}个端口'.format(end-start,len(alive_ip),len(port_result)))

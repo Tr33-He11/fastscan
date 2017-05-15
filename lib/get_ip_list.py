@@ -21,5 +21,21 @@ def get_ip_list(ip_range):
             for i in range(ip_start,ip_end+1):
                 yield num2ip(i)
         else:
-            print('IP format error')  
+            print('IP format error')   
 
+    elif '.' in ip_range:
+        ip_split = ip_range.split('.')
+        if len(ip_split) == 2:
+            for b in range(1,255):
+                for c in range(1,255):
+                    yield '{}.{}.{}.{}'.format(ip_split[0],ip_split[1],b,c)
+        elif len(ip_split) == 3:
+            for c in range(1,255):
+                yield '{}.{}.{}.{}'.format(ip_split[0],ip_split[1],ip_split[2],c)
+        elif len(ip_split) == 4:
+            yield ip_range 
+        else:
+            print('IP format error') 
+
+    else:
+        print('IP format error')
