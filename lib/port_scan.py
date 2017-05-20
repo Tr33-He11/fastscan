@@ -7,9 +7,9 @@ import pdb
 
 async def scan_port(ip,port):
     try:
-        async with asyncio.Semaphore(1000):
-            connection = asyncio.open_connection(ip,port)
-            reader,writer = await asyncio.wait_for(connection,timeout=1)
+#        async with asyncio.Semaphore(2000):
+        connection = asyncio.open_connection(ip,port)
+        reader,writer = await asyncio.wait_for(connection,timeout=1)
     except Exception as e:
         return 
    
@@ -21,11 +21,9 @@ async def scan_port(ip,port):
                 writer.write(HEAD.encode('utf-8'))
                 await writer.drain() 
                 banner = await reader.read(1024) 
-                writer.close() 
                 banner = banner.decode('utf-8')
                 banner = banner.replace('\r\n',' ').strip() 
         else:
-            writer.close()  
             url = 'https://{}'.format(ip)
             conn = aiohttp.TCPConnector(verify_ssl=False)
             async with aiohttp.ClientSession(connector=conn) as session:
@@ -37,7 +35,8 @@ async def scan_port(ip,port):
                             banner = '{} {}: {} '.format(banner,i,j)
                             
     except Exception as e: 
-        banner = ''
+        banner = '' 
+    finally:
+        writer.close() 
     
     return [ip,port,banner]
-

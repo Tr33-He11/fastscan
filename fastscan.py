@@ -7,7 +7,7 @@ from lib.cmdline import cmd_parse
 from lib.alive_scan import arp_ping,icmp_ping
 from lib.port_scan import scan_port  
 from lib.get_ip_list import get_ip_list 
-from lib.output import save_result,save_port
+from lib.output import save_result,save_port 
 import pdb  
 
 
@@ -37,7 +37,7 @@ def ping_type(ip,iface=[]):
     if type:
         result = arp_ping(ip,iface)
         if result:
-            print(result+' Up') 
+            print(result+' Up')
             return result
     else:
         result = icmp_ping(ip)
@@ -58,21 +58,22 @@ if __name__=='__main__':
     output = args.output 
     iface = args.iface 
 
-    all_speed = {'low':2,'medium':5,'high':10}
+    all_speed = {'low':5,'medium':10,'high':25}
     speed = all_speed[speed_arg]
     ip_list = get_ip_list(ip_range)  
     port_result = []
 
-    pool = Pool(30)
+    pool = Pool(50)
     args = [ (ip,iface)  for ip in ip_list]
     results = pool.starmap_async(ping_type,args)
     results = results.get() 
     pool.close() 
-    pool.join() 
+    pool.join()  
+
     ping_time = time.time() 
     alive_ip = [ ip for ip in results if ip]
     print('发现{}台存活主机　用时{}'.format(len(alive_ip),ping_time-start))  
-
+    
     loop = asyncio.get_event_loop() 
     for i in range(0,1000,speed):
         ports = [top_1000_tcp_port[j] for j in range(i,i+speed)]
@@ -87,4 +88,4 @@ if __name__=='__main__':
     if output:
         save_port(port_result,output) 
     save_result(port_result)
-    print('扫描用时: {},存活主机{}台,共开放{}个端口'.format(end-start,len(alive_ip),len(port_result)))
+    print('扫描用时: {},存活主机{}台,共开放{}个端口'.format(end-start,len(alive_ip),len(port_result))) 
