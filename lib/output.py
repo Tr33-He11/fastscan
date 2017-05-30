@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# coding=utf-8
+# coding=utf-8  
+from pymongo import MongoClient 
 
 def save_port(data,port):
     with open('{}.txt'.format(port),'w') as f:
@@ -16,10 +17,10 @@ def save_port(data,port):
 def save_result(results):
     with open('results.txt','w') as f:
         for result in results:
-            f.write('Host: {}  Port: {}  Banner: {}\n'.format(result[0],result[1],result[2]))
-        
+            f.write('Host: {}  Port: {}  Banner: {}\n'.format(result['ip'],result['port'],result['banner'])) 
 
-
-
-
-
+def save2mongodb(results):
+    conn = MongoClient('localhost',27017)
+    db = conn.banner 
+    db.col.insert(results)
+    conn.close() 

@@ -7,7 +7,7 @@ from lib.cmdline import cmd_parse
 from lib.alive_scan import arp_ping,icmp_ping
 from lib.port_scan import scan_port  
 from lib.get_ip_list import get_ip_list 
-from lib.output import save_result,save_port 
+from lib.output import save_result,save_port,save2mongodb
 import pdb  
 
 
@@ -88,4 +88,5 @@ if __name__=='__main__':
     if output:
         save_port(port_result,output) 
     save_result(port_result)
+    save2mongodb(port_result)
     print('扫描用时: {},存活主机{}台,共开放{}个端口'.format(end-start,len(alive_ip),len(port_result))) 

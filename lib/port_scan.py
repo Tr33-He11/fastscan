@@ -39,4 +39,4 @@ async def scan_port(ip,port):
     finally:
         writer.close() 
     
-    return [ip,port,banner]
+    return {'ip':ip,'port':port,'banner':banner}

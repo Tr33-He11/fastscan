@@ -1,0 +1,8 @@
+{% extends 'layout.html' %} 
+{% block body %}  
+{% for d in data %} 
+<li> IP: {{d['ip']}}  PORT: {{d['port']}}  <br> BANNER: {{d['banner']}} </li> 
+<br>
+{% endfor %}   
+{% endblock %} 
+
