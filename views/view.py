@@ -12,18 +12,17 @@ mongo = MongoDB()
 @app.route('/index.html')
 @app.route('/',methods=['POST','GET']) 
 def index():
-    if request.method == 'POST':
-        if request.form['q']:
-            q = request.form['q'] 
-            q = q.strip().split(';')
-            query = query_logic(q)
-            data = mongo.coll.find(query)
-        else:
-            data = []
-    else:
-        data = []
+#    pdb.set_trace() 
+    page_size = 5
+    q = request.form.get('q','')
+    q = q.strip().split(';') 
+    page = int(request.args.get('page','1'))
+    Previous = '/?page={}'.format(page-1)
+    Next = '/?page={}'.format(page+1)
+    query = query_logic(q)
+    data = mongo.coll.find(query).limit(page_size).skip((page-1) * page_size)
 
-    return render_template('index.html',data=data)
+    return render_template('index.html',data=data,Previous=Previous,Next=Next)
 
 
 @app.route('/search.html',methods=['POST','GET'])
