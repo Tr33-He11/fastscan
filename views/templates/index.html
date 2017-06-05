@@ -1,8 +1,12 @@
 {% extends 'layout.html' %} 
-{% block body %}  
-{% for d in data %} 
-<li> IP: {{d['ip']}}  PORT: {{d['port']}}  <br> BANNER: {{d['banner']}} </li> 
-<br>
-{% endfor %}   
+    {% block body %}  
+    {% for d in data %} 
+        <li> IP: {{d['ip']}}  PORT: {{d['port']}}  <br> BANNER: {{d['banner']}} </li> 
+        <br>
+    {% endfor %}    
+    <ul class='pager'>
+        <li><a href={{ Previous }}>Previous</a></li> 
+        <li><a href={{ Next }}>Next</a></li> 
+    </ul> 
 {% endblock %} 
 

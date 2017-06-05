@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 # coding=utf-8  
-from pymongo import MongoClient 
+from pymongo import MongoClient  
+import pdb 
 
 def save_port(data,port):
     with open('{}.txt'.format(port),'w') as f:
         for i in data:
             if port == 'http':
-                if i[2].find('HTTP') != -1:
-                    f.write('{}:{}\n'.format(i[0],i[1]))
+                if i['banner'].find('HTTP') != -1:
+                    f.write('{}:{}\n'.format(i['ip'],i['port']))
             else:
                 port = int(port)
-                if i[1] == port:
-                    f.write('{}:{}\n'.format(i[0],i[1])) 
+                if i['port'] == port:
+                    f.write('{}:{}\n'.format(i['ip'],i['port'])) 
 
 
 def save_result(results):
