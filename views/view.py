@@ -12,22 +12,27 @@ mongo = MongoDB()
 @app.route('/index.html')
 @app.route('/',methods=['POST','GET']) 
 def index():
-#    pdb.set_trace() 
+    result = mongo.coll.count() 
+    return render_template('index.html',result=result) 
+
+
+@app.route('/result.html',methods=['POST','GET'])
+def result(): 
     page_size = 10
     q = request.args.get('q','')
     q = q.strip().split(';')
     query = query_logic(q)
     page = int(request.args.get('page','1'))
-    Previous = '/?q={}&page={}'.format(q[0],page-1)
-    Next = '/?q={}&page={}'.format(q[0],page+1)
     data = mongo.coll.find(query).limit(page_size).skip((page-1) * page_size)
 
-    return render_template('index.html',data=data,Previous=Previous,Next=Next)
+    return render_template('result.html',logs=data,q=q,page2=page+1,page1=page-1)
 
 
 @app.route('/search.html',methods=['POST','GET'])
 def search():
-    return render_template('search.html',data=[])
+    return render_template('search.html')
+
+
 
 
 

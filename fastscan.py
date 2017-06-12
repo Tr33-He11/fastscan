@@ -58,7 +58,7 @@ if __name__=='__main__':
     output = args.output 
     iface = args.iface 
 
-    all_speed = {'low':5,'medium':10,'high':25}
+    all_speed = {'low':1,'medium':10,'high':25}
     speed = all_speed[speed_arg]
     ip_list = get_ip_list(ip_range)  
     port_result = []

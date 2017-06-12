@@ -4,7 +4,7 @@ from pymongo import MongoClient
 import pdb 
 
 def save_port(data,port):
-    with open('{}.txt'.format(port),'w') as f:
+    with open('{}.txt'.format(port),'a+') as f:
         for i in data:
             if port == 'http':
                 if i['banner'].find('HTTP') != -1:
@@ -16,7 +16,7 @@ def save_port(data,port):
 
 
 def save_result(results):
-    with open('results.txt','w') as f:
+    with open('results.txt','a+') as f:
         for result in results:
             f.write('Host: {}  Port: {}  Banner: {}\n'.format(result['ip'],result['port'],result['banner'])) 
 
