@@ -12,28 +12,29 @@ mongo = MongoDB()
 @app.route('/index.html')
 @app.route('/',methods=['POST','GET']) 
 def index():
-    result = mongo.coll.count() 
-    return render_template('index.html',result=result) 
+    ip_count = len(mongo.coll.distinct('ip'))
+    result_count = mongo.coll.count()  
+    return render_template('index.html',ip_count=ip_count,result_count=result_count) 
 
 
 @app.route('/result.html',methods=['POST','GET'])
 def result(): 
-    page_size = 10
     q = request.args.get('q','')
     q = q.strip().split(';')
     query = query_logic(q)
-    page = int(request.args.get('page','1'))
-    data = mongo.coll.find(query).limit(page_size).skip((page-1) * page_size)
+    data = mongo.coll.find(query).sort([('ip',1),('port',1)])
 
-    return render_template('result.html',logs=data,q=q,page2=page+1,page1=page-1)
+    return render_template('result.html',data=data,q=q)
 
 
 @app.route('/search.html',methods=['POST','GET'])
 def search():
     return render_template('search.html')
 
-
-
+@app.route('/test.html')
+def test():
+    data = mongo.coll.find().sort([('ip',1),('port',1)])
+    return render_template('test.html',data=data)
 
 
 if __name__ == '__main__':

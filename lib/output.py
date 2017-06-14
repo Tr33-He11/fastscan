@@ -22,6 +22,6 @@ def save_result(results):
 
 def save2mongodb(results):
     conn = MongoClient('localhost',27017)
-    db = conn.banner 
-    db.col.insert(results)
+    db = conn.fastscan
+    db.col.update({'ip':results['ip'],'port':results['port']},{'$set':{'banner':results['banner'],'date':results['date']}},upsert=True,multi=True)
     conn.close() 

@@ -3,7 +3,7 @@
 from pymongo import MongoClient  
 
 class MongoDB():
-    def __init__(self,host='localhost',port=27017,database='banner',username='',password=''):
+    def __init__(self,host='localhost',port=27017,database='fastscan',username='',password=''):
         self.host = host 
         self.port = port 
         self.database = database 
