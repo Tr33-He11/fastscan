@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-# coding=utf-8   
+# coding=utf-8     
+import concurrent.futures 
+import pdb
 import asyncio  
 import aiohttp 
 import async_timeout 
@@ -24,19 +26,39 @@ def icmp_ping(ip):
     if ans and ans[ICMP].type == 0:  
         return ip 
 
-async def alive_scan(ip):
-    ports = [80,3389,22,3306,443,21]
-    alive = 0
+async def alive_scan(ip):  
+    ports = [80,443]
+    alive = 0  
     for port in ports: 
-        if alive:
-            break 
         try:
-            async with asyncio.Semaphore(3000):
-                connection = asyncio.open_connection(ip,port)
+            async with asyncio.Semaphore(2000): 
+                connection = asyncio.open_connection(ip,port) 
                 reader,writer = await asyncio.wait_for(connection,timeout=1)
-        except Exception as e:    
-            continue 
+        except ConnectionRefusedError as e:     
+            alive = 1   
+        except Exception as e: 
+            pass
+#            print('an unexpected error: {}'.format(e))  
         else:
-            alive = 1 
+            writer.close()
+            alive = 1  
+        finally:
+            if alive:
+                break 
     if alive:
-        return ip
+        return ip 
+
+if __name__ == '__main__':  
+    ip_base = '172.22.254.{}' 
+    loop = asyncio.get_event_loop()  
+    tasks = [asyncio.ensure_future(alive_scan(ip_base.format(i))) for i in range(1,2) ]
+    loop.run_until_complete(asyncio.wait(tasks))
+    for task in tasks:
+        if task.result():
+            print(task.result()+' UP')
+#     results = []
+#         ip = ip_base.format(i)
+#         result = icmp_ping(ip)
+#         if result:
+#            results.append(result)  
+#     print('共发现{}台存活主机'.format(len(results)))

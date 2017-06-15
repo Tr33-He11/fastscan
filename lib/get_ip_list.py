@@ -24,7 +24,7 @@ def get_ip_list(ip_ranges):
             ip_end = ip2num(ip_split[1]) 
             ip_count = ip_end - ip_start 
 
-            if ip_count >= 0 and ip_count <= 65536:
+            if ip_count >= 0:
                 for i in range(ip_start,ip_end+1):
                     yield num2ip(i)
             else:

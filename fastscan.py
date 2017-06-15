@@ -72,9 +72,8 @@ if __name__=='__main__':
     else: 
         raise "no target specified" 
 
-    all_speed = {'low':1,'medium':10,'high':25}
+    all_speed = {'low':500,'medium':1000,'high':1500}
     speed = all_speed[speed_arg]
-    port_result = []
 
 #    pool = Pool(100)
 #    args = [ (ip,iface)  for ip in ip_list]
@@ -84,30 +83,70 @@ if __name__=='__main__':
 #    pool.join()   
 #    ping_time = time.time() 
 #    alive_ip = [ ip for ip in results if ip]   
-
-    alive_ip = []
-    ping_loop = asyncio.get_event_loop()  
-    ping_tasks = [asyncio.ensure_future(alive_scan(ip)) for ip in ip_list] 
-    ping_loop.run_until_complete(asyncio.wait(ping_tasks)) 
-    for task in ping_tasks:
-        if task.result(): 
-            alive_ip.append(task.result()) 
-    ping_time = time.time()
-    print('发现{}台存活主机　用时{}'.format(len(alive_ip),ping_time-start))    
-    if alive_ip: 
-        loop = asyncio.get_event_loop() 
-        for i in range(0,1000,speed):
-            ports = [top_1000_tcp_port[j] for j in range(i,i+speed)]
-            tasks = [asyncio.ensure_future(scan_port(ip,port)) for ip in alive_ip for port in ports]
-            loop.run_until_complete(asyncio.wait(tasks))
-            for task in tasks:
+    
+    i = 0
+    alive_ip = [] 
+    ips = []
+    for ip in ip_list:
+        i += 1
+        ips.append(ip) 
+        if i == 1500:
+            ping_loop = asyncio.get_event_loop()  
+            ping_tasks = [asyncio.ensure_future(alive_scan(ip)) for ip in ips]
+            ping_loop.run_until_complete(asyncio.wait(ping_tasks)) 
+            for task in ping_tasks:
                 if task.result(): 
-                    date = str(datetime.now()).split('.')[0]
-                    task.result()['date'] = date 
-                    save2mongodb(task.result())
-                    port_result.append(task.result())
-                    print(task.result())
-        loop.close() 
+                    alive_ip.append(task.result()) 
+            print('发现{}台存活主机'.format(len(alive_ip)))
+            i = 0
+            ips = [] 
+    else:
+        if ips:
+            ping_loop = asyncio.get_event_loop()  
+            ping_tasks = [asyncio.ensure_future(alive_scan(ip)) for ip in ips]
+            ping_loop.run_until_complete(asyncio.wait(ping_tasks)) 
+            for task in ping_tasks:
+                if task.result(): 
+                    alive_ip.append(task.result()) 
+     
+    ping_time = time.time()
+    print('发现{}台存活主机　用时{}'.format(len(alive_ip),ping_time-start))     
+
+    if alive_ip:  
+        port_result = []
+        i = 0
+        socket = [] 
+        
+        for port in top_1000_tcp_port:
+            for ip in alive_ip:
+                i += 1
+                socket.append((ip,port)) 
+                if i == speed:
+                    loop = asyncio.get_event_loop() 
+                    tasks = [asyncio.ensure_future(scan_port(sock[0],sock[1])) for sock in socket]
+                    loop.run_until_complete(asyncio.wait(tasks))
+                    for task in tasks:
+                        if task.result(): 
+                            date = str(datetime.now()).split('.')[0]
+                            task.result()['date'] = date 
+                            save2mongodb(task.result())
+                            port_result.append(task.result())
+                            print(task.result())
+                    i = 0
+                    socket = []  
+        else:
+            if socket: 
+                loop = asyncio.get_event_loop() 
+                tasks = [asyncio.ensure_future(scan_port(sock[0],sock[1])) for sock in socket]
+                loop.run_until_complete(asyncio.wait(tasks))
+                for task in tasks:
+                    if task.result(): 
+                        date = str(datetime.now()).split('.')[0]
+                        task.result()['date'] = date 
+                        save2mongodb(task.result())
+                        port_result.append(task.result())
+                        print(task.result())
+
         end = time.time()
         if port_result:
             if output:
