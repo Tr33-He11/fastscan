@@ -44,14 +44,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for d in data %}
-                <tr>
-                    <td>{{d['ip']}}</td> 
-                    <td>{{d['port']}}</td>
-                    <td>{{d['date']}}</td>
-                    <td>{{d['banner'][0:100]}}</td> 
-                </tr>
-                {% endfor %}
                 </tbody>
               </table>
             </div>
@@ -73,7 +65,14 @@
 <script src="{{ url_for('static', filename='demo.js') }}"></script>
 <script>
   $(function () {
-    $("#example1").DataTable();
+      $("#example1").DataTable({
+          "processing":true,
+          "serverSide":true,
+          "ajax":{
+              url:"data.json",
+              type:"POST"
+          }
+      }); 
     $('#example2').DataTable({
       "paging": true,
       "lengthChange": false,

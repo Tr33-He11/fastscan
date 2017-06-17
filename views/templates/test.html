@@ -42,15 +42,6 @@
                   <th>LogTime</th>
                 </tr>
                 </thead>
-                <tbody>
-                {% for log in data %}
-                <tr>
-                  <td>{{log['ip']}}</td>
-                  <td>{{log['port']}}</td>
-                  <td>{{log['date']}}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
               </table>
             </div>
             <!-- /.box-body -->
@@ -71,7 +62,15 @@
 <script src="{{ url_for('static', filename='demo.js') }}"></script>
 <script>
   $(function () {
-    $("#example1").DataTable();
+      $("#example1").DataTable({ 
+          "processing":true,
+          "serverSide":true,
+          "ajax":{
+              url:'data.json',
+              type:'POST'
+          }
+
+      });
     $('#example2').DataTable({
       "paging": true,
       "lengthChange": false,
