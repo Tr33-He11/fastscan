@@ -17,7 +17,7 @@ python3 fastscan -s [low,medium,high] ip range
 
 ### 总的来说，就是要一步步将其搞成一个类似zoomeye的神器，大学毕业前完成，也算是给自己的大学一个交代吧． 
 
-![](https://github.com/BeWhoYouWantToBe/fastscan/master/1.png)
-![](https://github.com/BeWhoYouWantToBe/fastscan/master/2.png) 
-![](https://github.com/BeWhoYouWantToBe/fastscan/master/3.png) 
-![](https://github.com/BeWhoYouWantToBe/fastscan/master/4.png) 
+![](https://github.com/BeWhoYouWantToBe/fastscan/blob/master/1.png)
+![](https://github.com/BeWhoYouWantToBe/fastscan/blob/master/2.png) 
+![](https://github.com/BeWhoYouWantToBe/fastscan/blob/master/3.png) 
+![](https://github.com/BeWhoYouWantToBe/fastscan/blob/master/4.png) 
