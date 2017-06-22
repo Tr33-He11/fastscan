@@ -26,7 +26,7 @@ def icmp_ping(ip):
     if ans and ans[ICMP].type == 0:  
         return ip 
 
-async def alive_scan(ip):  
+async def alive_scan(ip):   
     ports = [80,443]
     alive = 0  
     for port in ports: 

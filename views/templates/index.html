@@ -34,12 +34,12 @@
             <div class="inner">
               <h3>{{ ip_count }}</h3>
 
-              <p>网络资产</p>
+              <p>主机资产</p>
             </div>
             <div class="icon">
               <i class="fa fa-file-text"></i>
             </div>
-            <a href="{{url_for('result',page=1)}}" class="small-box-footer">
+            <a href="{{url_for('result',content_search_by='host')}}" class="small-box-footer">
               More info <i class="fa fa-arrow-circle-right"></i>
             </a>
           </div>
@@ -62,7 +62,26 @@
             </a>
           </div>
 
+        </div> 
+
+<div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-blue">
+            <div class="inner">
+              <h3>{{ web_count }}</h3>
+
+              <p>WEB资产</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-file-text"></i>
+            </div>
+            <a href="{{url_for('result',content_search_by='web')}}" class="small-box-footer">
+              More info <i class="fa fa-arrow-circle-right"></i>
+            </a>
+          </div>
+
         </div>
+
         <!-- ./col -->
 
 

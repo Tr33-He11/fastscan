@@ -30,18 +30,24 @@
 <body>
 <div class="box">
             <div class="box-header">
-              <h3 class="box-title">请求日志{{count}}</h3>
+              <h3 class="box-title">WEB资产</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>Url</th>
-                  <th>WorkId</th>
-                  <th>LogTime</th>
+                  <th>IP</th>
+                  <th>DOMAIN</th>
+                  <th>PORT</th>
+                  <th>TITLE</th> 
+                  <th>SERVER</th>  
+                  <th>HEADER</th>
+                  <th>DATE</ht>
                 </tr>
                 </thead>
+                <tbody>
+                </tbody>
               </table>
             </div>
             <!-- /.box-body -->
@@ -62,15 +68,14 @@
 <script src="{{ url_for('static', filename='demo.js') }}"></script>
 <script>
   $(function () {
-      $("#example1").DataTable({ 
+      $("#example1").DataTable({
           "processing":true,
           "serverSide":true,
           "ajax":{
-              url:'data.json',
-              type:'POST'
+              url:"web_data.json",
+              type:"POST"
           }
-
-      });
+      }); 
     $('#example2').DataTable({
       "paging": true,
       "lengthChange": false,

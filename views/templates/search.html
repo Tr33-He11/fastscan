@@ -3,15 +3,29 @@
 
 <div class="panel-body">
     <form method="get" action={{ url_for('result') }} role="form" class="text-center">
-    <div class="form-group">
+    <div class="input-group">
     <input type="text" class="form-control" placeholder="Example:  ip: 192.168.1.1; port: 22" style="color: #797979;" id="filter" name="q">
-        <button type="submit" class="btn btn-inverse btn-rounded w-md waves-effect waves-light m-b-5" style="margin-top: 20px">搜索</button>
-            <i class="zmdi zmdi-help-outline zmdi-hc-2x" style="position: relative" id="tips"></i>
+
+    <span class="input-group-btn">
+    <button class="btn btn-default btn-primary" type="submit" >搜索</button>
+    </span>
     </div>
-</form>
+
+    <div class="col-sm-8 col-sm-6">
+    <div class="radio-inline">
+    <label>
+    <input type="radio" name="content_search_by" id="host" value="host" checked>HOST
+    </label>
+    </div>
+    <div class="radio-inline">
+    <label>
+    <input type="radio" name="content_search_by" id="web" value="web">WEB
+    </label>
+    </div> 
+    </div>
+    
+    </form>
 </div>
-
-
 
 {% endblock %} 
 

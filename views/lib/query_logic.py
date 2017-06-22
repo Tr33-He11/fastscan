@@ -13,10 +13,21 @@ def query_logic(list):
                     contents = _.split(':')[1]
                     match = zhPattern.search(contents)
                     # 如果没有中文用全文索引
-                    query['banner'] = {"$regex": _.split(':')[1], '$options': 'i'} 
+                    query['banner'] = {"$regex": _.split(':')[1], '$options': 'i'}   
+
+                elif _.split(':')[0] == 'title':
+                    zhPattern = re.compile(u'[\u4e00-\u9fa5]+')
+                    contents = _.split(':')[1]
+                    match = zhPattern.search(contents)
+                    # 如果没有中文用全文索引
+                    query['title'] = {"$regex": _.split(':')[1], '$options': 'i'} 
+
                 elif _.split(':')[0] == 'ip':
                     ip = _.split(':')[1]
-                    query['ip'] = {"$regex": ip}
+                    query['ip'] = {"$regex": ip} 
+                elif _.split(':')[0] == 'server':
+                    server = _.split(':')[1]
+                    query['server'] = {"$regex":server,"$options":'i'}
                 elif _.split(':')[0] == 'all':
                     filter = []
                     for i in ('ip', 'banner', 'port'):

@@ -29,8 +29,8 @@ async def scan_port(ip,port):
             async with aiohttp.ClientSession(connector=conn) as session:
                 with async_timeout.timeout(1):
                     async with session.get(url) as response:
-                        headers = response.headers
-                        banner = 'HTTP/1.1' 
+                        headers = response.headers 
+                        banner = 'HTTP/1.1 {} {}'.format(response.status,response.reason)
                         for i,j in headers.items():
                             banner = '{} {}: {} '.format(banner,i,j)
                             

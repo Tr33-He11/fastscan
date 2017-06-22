@@ -25,7 +25,8 @@
 				<ul class="nav navbar-nav">
                     <li class = "active"><a href={{ url_for('index') }}>Home</a></li>
                     <li><a href={{ url_for('search') }}>Search</a></li> 
-                    <li><a href={{ url_for('result') }}>Result</a></li> 
+                    <li><a href={{ url_for('result',content_search_by='web') }}>Web</a></li>  
+                    <li><a href={{ url_for('result',content_search_by='host') }}>Host</a></li>
                     <!--	<li><a href="{url_for('systeminfo')}">系统状态</a></li>   --> 
 				</ul>
 			</div>
